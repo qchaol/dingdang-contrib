@@ -32,21 +32,15 @@ def handle(text, mic, profile, wxbot=None):
         mic.say(u'已取消')
         return
     
-    fetchRoadCondition(input)    
-      
-
-
-def fetchRoadCondition(road):
-   url_transit = "http://restapi.amap.com/v3/traffic/status/road"
+  
+    url_transit = "http://restapi.amap.com/v3/traffic/status/road"
    
-   citycode = u"&adcode=440300&key=645d25ae0a88de0d14f35738af54cce7"
+    citycode = u"&adcode=440300&key="+app_key
+    params_condition = "name="+input + citycode 
    
-   params_condition = u"name="+road + citycode 
-   
-   res = request(url_transit,params_condition.encode("utf-8"))
-   json.dumps(res, encoding="UTF-8", ensure_ascii=False)
-   print res
-   if res:        
+    res = request(url_transit,params_condition.encode("utf-8"))
+    print res
+    if res:        
         status = res["status"]
         if status == "1":
             print "status == 1"
@@ -62,7 +56,7 @@ def fetchRoadCondition(road):
         else:
             logger.error(u"位置接口:" + res['message'])
             return
-   else:
+    else:
         logger.error(u"位置接口调用失败")
         return 
 
