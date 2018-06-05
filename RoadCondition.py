@@ -2,30 +2,28 @@
 import sys
 import os
 import logging
-import json, urllib
-from urllib import urlencode
+import json
+import requests
 
 WORDS = ["LUKUANG"]
 SLUG = "roadcondition"
 
-def request(url, params):    
-
-    f = urllib.urlopen("%s?%s" % (url, params))
-
-    content = f.read()
-    return json.loads(content)
+def request(url, params): 
+    result = requests.post(url, data=params)
+    return json.loads(result.text, encoding='utf-8')
 
 
 def handle(text, mic, profile, wxbot=None):
     logger = logging.getLogger(__name__)
     
     if SLUG not in profile or \
-       'app_key' not in profile[SLUG]:
+       'app_key' not in profile[SLUG] or \
+       'adcode' not in profile[SLUG]:
         mic.say(u"插件配置有误，插件使用失败")
         return
         
     app_key = profile[SLUG]['app_key']  
-
+    adcode  = profile[SLUG]['adcode']
     mic.say(u'哪条道路')
     input = mic.activeListen(MUSIC=True)
     if input is None:
@@ -34,11 +32,9 @@ def handle(text, mic, profile, wxbot=None):
     
   
     url_transit = "http://restapi.amap.com/v3/traffic/status/road"
+    params = {"adcode" : adcode,"name" : input,"key" : app_key}
    
-    citycode = u"&adcode=440300&key="+app_key
-    params_condition = "name="+input + citycode 
-   
-    res = request(url_transit,params_condition.encode("utf-8"))
+    res = request(url_transit,params_condition)
     print res
     if res:        
         status = res["status"]
@@ -51,13 +47,13 @@ def handle(text, mic, profile, wxbot=None):
                 mic.say(place_name)
                 mic.say(place_name1)                
             else:
-                mic.say(u"错误的位置")
+                mic.say(u"无法获取到信息")
                 return
         else:
-            logger.error(u"位置接口:" + res['message'])
+            logger.error(u"接口错误:")
             return
     else:
-        logger.error(u"位置接口调用失败")
+        logger.error(u"接口调用失败")
         return 
 
 
