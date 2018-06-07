@@ -27,14 +27,13 @@ def handle(text, mic, profile, wxbot=None):
     mic.say(u'哪条道路')
     input = mic.activeListen(MUSIC=True)
     if input is None:
-        mic.say(u'已取消')
-        return
+        input = "龙岗大道"
     
   
     url_transit = "http://restapi.amap.com/v3/traffic/status/road"
     params = {"adcode" : adcode,"name" : input,"key" : app_key}
    
-    res = request(url_transit,params_condition)
+    res = request(url_transit,params)
     print res
     if res:        
         status = res["status"]
