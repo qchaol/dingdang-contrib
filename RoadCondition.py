@@ -41,10 +41,10 @@ def handle(text, mic, profile, wxbot=None):
             print "status == 1"
             print res['trafficinfo']
             if len(res['trafficinfo']) > 0:
-                place_name = res['trafficinfo']['evaluation']['description']
-                place_name1 = res['trafficinfo']['description']
-                mic.say(place_name)
-                mic.say(place_name1)                
+                trafficinfo = res['trafficinfo']['evaluation']['description']
+                trafficinfo1 = res['trafficinfo']['description']
+                mic.say(trafficinfo)
+                mic.say(trafficinfo1)                
             else:
                 mic.say(u"无法获取到信息")
                 return
@@ -57,4 +57,4 @@ def handle(text, mic, profile, wxbot=None):
 
 
 def isValid(text):
-    return any(word in text for word in [u"路况", u"上班", u"塞车"])
+    return any(word in text for word in [u"路况"])
